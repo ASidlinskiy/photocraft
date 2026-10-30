@@ -67,12 +67,9 @@ pub(crate) fn tick(app: &mut PhotocraftApp, ctx: &egui::Context) {
     if app.session.updates.check.is_none() {
         return;
     }
-    if !app.updates_rt.startup_checked {
-        app.updates_rt.startup_checked = true;
-        if app.session.prefs().general.automatically_check_updates && matches!(app.session.updates.status, Status::Idle) {
-            let _ = app.run("help.checkForUpdates", serde_json::json!({}));
-        }
-    }
+    // Local no-auto-update build: no version check at startup, regardless of the
+    // `automaticallyCheckUpdates` preference. Help ▸ Check for Updates still works on demand.
+    app.updates_rt.startup_checked = true;
     if matches!(app.session.updates.status, Status::Checking) {
         ctx.request_repaint_after(std::time::Duration::from_millis(100));
     }
